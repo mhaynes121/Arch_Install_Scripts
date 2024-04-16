@@ -1,0 +1,56 @@
+Arch Linux Setup
+-- Connect to internet - iwctl
+-- Set timezone - timedatectl set-timezone America/Chicago
+-- Setup partitions using fdisk
+-- Format partions using mkfs.fat (EFI boot), mkswap (swap), mkfs.ext4 (root, other linux partions)
+-- Install base linux: pacstrap -K /mnt boot linux linux-firmware iwd intel-ucode sof-firmware vim man-db man-pages also-utils
+---- setup fstab file: genfstab -U /mnt >> /mnt/etc/fstab
+-- Set locale: 
+---- edit /etc/locale.gen and uncomment needed locales
+---- run locale-gen to generate
+---- create /etc/locale.conf 
+------ add line: LANG=en_US.UTF-8 (or whatever locale(s))
+-- Create hostname
+---- vim /etc/hostname (add name)
+-- set root pw: passwd
+-- Setup boot loader
+--- I prefer GRUB
+---- Install packages: grub, efibootmgr
+---- create boot dir: mkdir /boot/EFI
+---- grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
+---- generate config file: grub-mkconfig -o /boot/grub/grub.cfg
+-- Install package: dhcpcd
+---- enable on boot: systemctl enable dhcpcd
+-- on first boot
+---- configure IWD to start automatically
+------ systemctl enable iwd
+---- start IWD for this session manually
+------ systemctl start iwd.service
+---- run iwctl and connect to network
+---- enable network deamons
+------ systemctl enable systemd-networkd
+------ systemctl enable systemd-resolved
+- Install package: sudo
+- setup new user: useradd
+-- add to wheel group : usermod -aG wheel
+-- add to tty,video groups for QTILE: usermod -aG tty,video 
+-- edit /etc/sudoers : uncomment line granting 'wheel' group access to sudo command. Alternatively you can set user specific right instead of 'wheel' group.
+-- Install package: which
+-- Install package: python
+-- Install package: python-pywlroots
+-- Install package: xorg-fonts-misc
+-- Install package: polkit
+-- Install package: Qtile
+---- modify qtile config 
+------ change font, font size
+------ change location of bar to top 
+-- Install package: alacritty
+-- install package: firefox-developer-edition
+-- Install package: git
+
+-- optional
+---- install misc fonts-misc
+
+-- AUDIO --
+- Install package (should be done on arch install): alsa-utils
+- Use Alsamixer to make sure channels are not muted / turned down. Also check sound card setting. May need to manually edit /usr/share/alsa/alsa.conf to set card default
